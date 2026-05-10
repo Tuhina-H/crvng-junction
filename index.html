@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crvng Junction — Free Shawarma Pre-Launch</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #F5E6C0;
+    --gold-dark: #8B6914;
+    --deep: #1A1008;
+    --warm: #2D1F0A;
+    --surface: #F9F4EC;
+    --text: #1A1008;
+    --muted: #6B5B3E;
+    --red: #C0392B;
+    --green: #1B6B3A;
+    --white: #FFFFFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HERO BANNER ── */
+  .hero {
+    background: var(--deep);
+    color: var(--white);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    min-height: 340px;
+    display: flex;
+    align-items: center;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 70% 50%, #3D2A08 0%, #1A1008 60%);
+  }
+  .hero-pattern {
+    position: absolute; inset: 0;
+    opacity: 0.06;
+    background-image: repeating-linear-gradient(45deg, #C9A84C 0, #C9A84C 1px, transparent 0, transparent 50%);
+    background-size: 20px 20px;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 40px 24px 40px;
+    max-width: 680px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--deep);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 7vw, 54px);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 8px;
+    color: var(--white);
+  }
+  .hero h1 span { color: var(--gold); }
+  .hero-sub {
+    font-size: 16px;
+    color: rgba(255,255,255,0.72);
+    margin-bottom: 20px;
+    font-weight: 300;
+    line-height: 1.5;
+  }
+  .hero-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .hero-tag {
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.35);
+    color: var(--gold-light);
+    font-size: 13px;
+    padding: 6px 14px;
+    border-radius: 20px;
+  }
+
+  /* ── COUNTDOWN ── */
+  .offer-strip {
+    background: var(--gold);
+    color: var(--deep);
+    text-align: center;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .offer-strip span { opacity: 0.7; margin: 0 6px; }
+
+  /* ── AVAILABILITY SECTION ── */
+  .section { max-width: 680px; margin: 0 auto; padding: 32px 20px 0; }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--deep);
+  }
+  .dates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .date-card {
+    background: var(--white);
+    border: 2px solid transparent;
+    border-radius: 14px;
+    padding: 16px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .date-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+  .date-card.selected { border-color: var(--gold); background: #FFFBF0; }
+  .date-card.full { opacity: 0.55; cursor: not-allowed; background: #f5f5f5; }
+  .date-card .day-name { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .date-card .day-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--deep); line-height: 1; }
+  .date-card .month { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+  .avail-bar-wrap { background: #EDE8DF; border-radius: 20px; height: 6px; margin-bottom: 6px; overflow: hidden; }
+  .avail-bar { height: 100%; border-radius: 20px; background: var(--gold); transition: width 0.5s; }
+  .avail-bar.low { background: var(--red); }
+  .avail-count { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .avail-count.low-text { color: var(--red); }
+  .avail-count.full-text { color: var(--red); }
+  .date-card .full-badge {
+    position: absolute; top: 8px; right: 8px;
+    background: var(--red); color: white;
+    font-size: 9px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; padding: 3px 7px; border-radius: 20px;
+  }
+  .date-card.selected .day-name { color: var(--gold-dark); }
+
+  /* ── FORM ── */
+  .form-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 28px 24px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 24px rgba(26,16,8,0.07);
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.8px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .field input, .field select {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid #E0D8CC;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--white);
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus { border-color: var(--gold); }
+  .field input.error, .field select.error { border-color: var(--red); }
+  .field-error { font-size: 12px; color: var(--red); margin-top: 4px; display: none; }
+  .field.has-error .field-error { display: block; }
+
+  .selected-date-display {
+    background: #FFFBF0;
+    border: 1.5px solid var(--gold);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 15px;
+    color: var(--gold-dark);
+    font-weight: 600;
+  }
+  .no-date-selected { color: var(--red); font-size: 13px; margin-top: 6px; display: none; }
+
+  .submit-btn {
+    width: 100%;
+    background: var(--deep);
+    color: var(--gold);
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .submit-btn:hover { background: var(--warm); transform: translateY(-1px); }
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* ── SUCCESS ── */
+  .success-screen {
+    display: none;
+    background: var(--white);
+    border-radius: 20px;
+    padding: 40px 24px;
+    text-align: center;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 24px rgba(26,16,8,0.07);
+  }
+  .success-icon {
+    width: 72px; height: 72px;
+    background: #EDFAF3;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 32px;
+  }
+  .success-screen h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px; font-weight: 700;
+    color: var(--deep); margin-bottom: 8px;
+  }
+  .success-screen p { color: var(--muted); font-size: 15px; line-height: 1.6; margin-bottom: 20px; }
+  .coupon-box {
+    background: var(--deep);
+    border-radius: 14px;
+    padding: 20px;
+    margin: 20px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .coupon-box::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(45deg, #C9A84C 0, #C9A84C 1px, transparent 0, transparent 50%);
+    background-size: 16px 16px;
+    opacity: 0.05;
+  }
+  .coupon-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+  .coupon-code { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: var(--gold); letter-spacing: 4px; }
+  .coupon-sub { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 8px; }
+  .copy-btn {
+    background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold); border-radius: 8px; padding: 8px 18px;
+    font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 10px;
+  }
+  .copy-btn:active { opacity: 0.7; }
+  .success-note {
+    background: #FFFBF0; border: 1px solid var(--gold-light);
+    border-radius: 10px; padding: 14px 16px;
+    font-size: 13px; color: var(--gold-dark);
+    line-height: 1.6; text-align: left;
+  }
+
+  /* ── ADMIN SECTION ── */
+  .admin-toggle {
+    text-align: center;
+    padding: 16px 20px 32px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .admin-link {
+    font-size: 12px; color: var(--muted);
+    text-decoration: none; letter-spacing: 0.5px;
+    border-bottom: 1px dashed var(--muted);
+    cursor: pointer;
+  }
+
+  .admin-panel {
+    display: none;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+  }
+  .admin-card {
+    background: var(--deep);
+    border-radius: 20px;
+    padding: 28px 24px;
+    color: var(--white);
+  }
+  .admin-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px; color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .admin-login { margin-bottom: 20px; }
+  .admin-input {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid rgba(201,168,76,0.3);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.07);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    margin-bottom: 10px;
+  }
+  .admin-input:focus { border-color: var(--gold); }
+  .admin-btn {
+    background: var(--gold); color: var(--deep);
+    border: none; border-radius: 10px;
+    padding: 11px 24px; font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+  .admin-result {
+    margin-top: 16px; padding: 14px;
+    border-radius: 10px; font-size: 14px;
+    display: none; line-height: 1.5;
+  }
+  .admin-result.valid { background: rgba(27,107,58,0.3); color: #7EFFC3; border: 1px solid rgba(27,107,58,0.5); }
+  .admin-result.invalid { background: rgba(192,57,43,0.3); color: #FFB3AD; border: 1px solid rgba(192,57,43,0.5); }
+  .admin-error { color: #FFB3AD; font-size: 13px; margin-top: 8px; display: none; }
+
+  /* ── LOADING ── */
+  .loading { display: none; text-align: center; padding: 16px; color: var(--muted); font-size: 14px; }
+  .spinner {
+    display: inline-block; width: 18px; height: 18px;
+    border: 2px solid var(--gold-light);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle; margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .global-loading {
+    background: rgba(249,244,236,0.9);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  /* ── CONFIG NOTICE ── */
+  .config-notice {
+    background: #FFF9EC;
+    border: 1.5px solid var(--gold);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: var(--gold-dark);
+    line-height: 1.6;
+  }
+  .config-notice strong { color: var(--deep); }
+  .config-notice code {
+    background: rgba(201,168,76,0.15);
+    padding: 2px 6px; border-radius: 4px;
+    font-size: 12px; font-family: monospace;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ HERO BANNER -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-pattern"></div>
+  <div class="hero-content">
+    <div class="badge">🌯 Pre-Launch Exclusive</div>
+    <h1>Crvng<br><span>Junction</span></h1>
+    <p class="hero-sub">We're opening our doors soon — and you're invited to be the first. Claim your complimentary shawarma before we do.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">✦ 1 Free Shawarma</span>
+      <span class="hero-tag">✦ Zero Cost</span>
+      <span class="hero-tag">✦ Limited Spots</span>
+    </div>
+  </div>
+</div>
+
+<!-- OFFER STRIP -->
+<div class="offer-strip">
+  🔥 Only 100 coupons per day across 4 dates <span>•</span> Register now before they're gone
+</div>
+
+<!-- ═══════════════════════════════════════════ SETUP NOTICE (remove after setup) -->
+<div class="section" id="setup-notice">
+  <div class="config-notice">
+    <strong>⚙️ Setup required before going live:</strong><br>
+    Replace <code>YOUR_GOOGLE_SCRIPT_URL</code> in the script CONFIG with your Apps Script URL. Inside Apps Script, set <code>BREVO_API_KEY</code> and <code>BREVO_SENDER_EMAIL</code> at the top of the script — the key stays there, never in this HTML file. Full instructions in the guide below.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ AVAILABILITY -->
+<div class="section">
+  <p class="section-title">Choose your date</p>
+  <div class="dates-grid" id="dates-grid">
+    <!-- injected by JS -->
+    <div class="global-loading"><span class="spinner"></span> Loading availability...</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ REGISTRATION FORM -->
+<div class="section">
+  <p class="section-title">Your details</p>
+  <div class="form-card" id="reg-form-wrap">
+    <div class="form-row">
+      <div class="field" id="field-fname">
+        <label>First Name</label>
+        <input type="text" id="fname" placeholder="Arjun" autocomplete="given-name">
+        <div class="field-error">Please enter your first name</div>
+      </div>
+      <div class="field" id="field-lname">
+        <label>Last Name</label>
+        <input type="text" id="lname" placeholder="Sharma" autocomplete="family-name">
+        <div class="field-error">Please enter your last name</div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="field" id="field-age">
+        <label>Age</label>
+        <input type="number" id="age" placeholder="24" min="1" max="120">
+        <div class="field-error">Please enter a valid age</div>
+      </div>
+      <div class="field" id="field-gender">
+        <label>Gender</label>
+        <select id="gender">
+          <option value="">Select</option>
+          <option>Male</option>
+          <option>Female</option>
+          <option>Non-binary</option>
+          <option>Prefer not to say</option>
+        </select>
+        <div class="field-error">Please select a gender</div>
+      </div>
+    </div>
+    <div class="field" id="field-email">
+      <label>Email ID</label>
+      <input type="email" id="email" placeholder="arjun@example.com" autocomplete="email">
+      <div class="field-error">Please enter a valid email</div>
+    </div>
+    <div class="field" id="field-contact">
+      <label>Contact Number</label>
+      <input type="tel" id="contact" placeholder="+91 98765 43210" autocomplete="tel">
+      <div class="field-error">Please enter a valid contact number</div>
+    </div>
+    <div class="field">
+      <label>Selected Date</label>
+      <div id="selected-date-display" class="selected-date-display" style="color:#B0A090;">— Please pick a date above —</div>
+      <div class="no-date-selected" id="no-date-err">Please select a date before submitting</div>
+    </div>
+
+    <div class="loading" id="submit-loading">
+      <span class="spinner"></span> Registering your spot...
+    </div>
+    <button class="submit-btn" id="submit-btn" onclick="handleSubmit()">
+      Claim My Free Shawarma 🌯
+    </button>
+  </div>
+
+  <!-- Success screen -->
+  <div class="success-screen" id="success-screen">
+    <div class="success-icon">🎉</div>
+    <h2>You're in!</h2>
+    <p>Your spot is confirmed. Show this coupon code at Crvng Junction on your chosen date to claim your free shawarma.</p>
+    <div class="coupon-box">
+      <div class="coupon-label">Your Coupon Code</div>
+      <div class="coupon-code" id="coupon-display">CRVNG-XXXX</div>
+      <div class="coupon-sub">Valid on your registered date only</div>
+      <button class="copy-btn" onclick="copyCoupon()">Copy Code</button>
+    </div>
+    <div class="success-note" id="success-note">
+      📧 A confirmation email has been sent to <strong id="email-confirm"></strong> with your coupon code.<br><br>
+      📍 <strong>Crvng Junction</strong> — Present this code to the staff when you arrive.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ ADMIN -->
+<div class="admin-toggle">
+  <span class="admin-link" onclick="toggleAdmin()">Staff Login</span>
+</div>
+
+<div class="admin-panel" id="admin-panel">
+  <div class="admin-card">
+    <h3>🔐 Staff Coupon Validator</h3>
+    <div id="admin-login-section">
+      <input class="admin-input" type="password" id="admin-pass" placeholder="Enter staff password" onkeydown="if(event.key==='Enter')adminLogin()">
+      <br>
+      <button class="admin-btn" onclick="adminLogin()">Log In</button>
+      <div class="admin-error" id="admin-login-err">Incorrect password. Try again.</div>
+    </div>
+    <div id="admin-validator-section" style="display:none">
+      <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-bottom:14px;">Enter the coupon code the customer presents to verify it.</p>
+      <input class="admin-input" type="text" id="coupon-input" placeholder="e.g. CRVNG-A1B2C3" style="text-transform:uppercase" onkeydown="if(event.key==='Enter')validateCoupon()">
+      <button class="admin-btn" onclick="validateCoupon()" style="margin-top:4px">Validate Coupon</button>
+      <div class="loading" id="validate-loading" style="color:var(--gold-light)">
+        <span class="spinner"></span> Checking...
+      </div>
+      <div class="admin-result" id="admin-result"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SETUP GUIDE -->
+<div style="max-width:680px;margin:0 auto;padding:0 20px 60px;">
+  <details style="background:var(--white);border-radius:14px;padding:20px;cursor:pointer;">
+    <summary style="font-weight:600;font-size:15px;color:var(--deep);list-style:none;">📋 Setup Guide — How to make this fully live (free tools only)</summary>
+    <div style="margin-top:16px;font-size:13px;line-height:1.8;color:var(--muted);">
+      <p><strong style="color:var(--deep);">Step 1 — Google Sheets backend (free)</strong></p>
+      <ol style="margin-left:16px;margin-bottom:16px;">
+        <li>Go to <a href="https://sheets.google.com" target="_blank" style="color:var(--gold-dark)">sheets.google.com</a> and create a new spreadsheet</li>
+        <li>Name the first sheet <code style="background:#F0EAE0;padding:1px 5px;border-radius:3px;">Registrations</code></li>
+        <li>Add headers in Row 1: <code style="background:#F0EAE0;padding:1px 5px;border-radius:3px;">Timestamp | FirstName | LastName | Age | Gender | Email | Contact | Date | CouponCode | Used</code></li>
+        <li>Go to <strong>Extensions → Apps Script</strong></li>
+        <li>Paste the Google Apps Script code (in the second details block below)</li>
+        <li>Click <strong>Deploy → New Deployment → Web App</strong></li>
+        <li>Set "Who has access" to <strong>Anyone</strong>, click Deploy</li>
+        <li>Copy the Web App URL and paste it into this HTML file replacing <code style="background:#F0EAE0;padding:1px 5px;border-radius:3px;">YOUR_GOOGLE_SCRIPT_URL</code></li>
+      </ol>
+      <p><strong style="color:var(--deep);">Step 2 — Brevo for emails (free, 300 emails/day = 1,200 over 4 days)</strong></p>
+      <ol style="margin-left:16px;margin-bottom:16px;">
+        <li>Sign up free at <a href="https://www.brevo.com" target="_blank" style="color:var(--gold-dark)">brevo.com</a> — the free plan gives 300 emails/day, covering all 400 registrations across 4 days</li>
+        <li>Go to <strong>Settings → API Keys</strong> and click <strong>Generate a new API key</strong>. Copy it.</li>
+        <li>Go to <strong>Senders &amp; Domains → Senders</strong> and add + verify the email you want to send from (e.g. hello@crvngjunction.com)</li>
+        <li>Open your <strong>Google Apps Script</strong> (from Step 1) and paste your API key and sender email into the two lines at the top: <code style="background:#F0EAE0;padding:1px 5px;border-radius:3px;">BREVO_API_KEY</code> and <code style="background:#F0EAE0;padding:1px 5px;border-radius:3px;">BREVO_SENDER_EMAIL</code></li>
+        <li><strong style="color:var(--deep);">⚠ Important:</strong> The API key lives only inside Apps Script — it is never in the HTML file. This keeps it private and avoids the GitHub secret scanning warning.</li>
+        <li>No template setup needed — the email HTML is built directly into the Apps Script code</li>
+      </ol>
+      <p><strong style="color:var(--deep);">Step 3 — Host on GitHub Pages (free, permanent URL)</strong></p>
+      <ol style="margin-left:16px;margin-bottom:16px;">
+        <li>Create a free account at <a href="https://github.com" target="_blank" style="color:var(--gold-dark)">github.com</a></li>
+        <li>Create a new repository, name it <code style="background:#F0EAE0;padding:1px 5px;border-radius:3px;">crvng-junction</code></li>
+        <li>Upload this HTML file, name it <code style="background:#F0EAE0;padding:1px 5px;border-radius:3px;">index.html</code></li>
+        <li>Go to <strong>Settings → Pages → Source: Deploy from branch (main)</strong></li>
+        <li>Your URL will be: <code style="background:#F0EAE0;padding:1px 5px;border-radius:3px;">https://yourusername.github.io/crvng-junction</code></li>
+      </ol>
+      <p><strong style="color:var(--deep);">Step 4 — Generate QR code (free)</strong></p>
+      <ol style="margin-left:16px;margin-bottom:16px;">
+        <li>Go to <a href="https://qr-code-generator.com" target="_blank" style="color:var(--gold-dark)">qr-code-generator.com</a></li>
+        <li>Paste your GitHub Pages URL</li>
+        <li>Download and print the QR code</li>
+      </ol>
+      <p><strong style="color:var(--deep);">Admin password:</strong> Default is <code style="background:#F0EAE0;padding:1px 5px;border-radius:3px;">crvng2025</code> — change it in the CONFIG section.</p>
+    </div>
+  </details>
+
+  <details style="background:var(--white);border-radius:14px;padding:20px;margin-top:12px;cursor:pointer;">
+    <summary style="font-weight:600;font-size:15px;color:var(--deep);list-style:none;">📄 Google Apps Script code — paste this into Apps Script</summary>
+    <pre style="margin-top:16px;background:#F0EAE0;border-radius:10px;padding:16px;font-size:11px;overflow-x:auto;line-height:1.6;white-space:pre-wrap;color:#2D1F0A;">const SHEET_NAME = 'Registrations';
+const MAX_PER_DAY = 100;
+const OFFER_DATES = ['2025-05-21','2025-05-22','2025-05-23','2025-05-24'];
+
+// PUT YOUR BREVO DETAILS HERE — this file is private, never exposed publicly
+const BREVO_API_KEY = 'YOUR_BREVO_API_KEY';
+const BREVO_SENDER_EMAIL = 'YOUR_VERIFIED_SENDER_EMAIL';
+const BREVO_SENDER_NAME = 'Crvng Junction';
+
+function doGet(e) {
+  const action = e.parameter.action;
+  if (action === 'getAvailability') return getAvailability();
+  if (action === 'validate') return validateCoupon(e.parameter.code);
+  return ContentService.createTextOutput('OK');
+}
+
+function doPost(e) {
+  const data = JSON.parse(e.postData.contents);
+  if (data.action === 'register') return register(data);
+  return jsonResponse({success:false, error:'Unknown action'});
+}
+
+function getAvailability() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const rows = sheet.getDataRange().getValues();
+  const counts = {};
+  OFFER_DATES.forEach(d =&gt; counts[d] = 0);
+  rows.slice(1).forEach(r =&gt; { if (counts[r[7]] !== undefined) counts[r[7]]++; });
+  const avail = {};
+  OFFER_DATES.forEach(d =&gt; avail[d] = Math.max(0, MAX_PER_DAY - (counts[d]||0)));
+  return jsonResponse({success:true, availability: avail});
+}
+
+function register(data) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const rows = sheet.getDataRange().getValues();
+  const dateCount = rows.slice(1).filter(r =&gt; r[7] === data.date).length;
+  if (dateCount &gt;= MAX_PER_DAY) return jsonResponse({success:false, error:'FULL'});
+  const existing = rows.slice(1).find(r =&gt; r[5] === data.email &amp;&amp; r[7] === data.date);
+  if (existing) return jsonResponse({success:false, error:'DUPLICATE'});
+  const code = 'CRVNG-' + Math.random().toString(36).substring(2,8).toUpperCase();
+  sheet.appendRow([new Date(),data.firstName,data.lastName,data.age,data.gender,data.email,data.contact,data.date,code,'false']);
+  sendBrevoEmail(data.email, data.firstName, code, data.date);
+  return jsonResponse({success:true, couponCode: code});
+}
+
+function sendBrevoEmail(toEmail, firstName, couponCode, date) {
+  try {
+    // Format date: "2025-05-21" becomes "Wednesday, 21 May 2025"
+    var dateObj = new Date(date + 'T00:00:00');
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var dateLabel = days[dateObj.getDay()] + ', ' + dateObj.getDate() + ' ' + months[dateObj.getMonth()] + ' ' + dateObj.getFullYear();
+
+    // Build the email HTML string
+    var h = '';
+    h += '&lt;div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;background:#1A1008;border-radius:16px;overflow:hidden;"&gt;';
+
+    h += '&lt;div style="background:#C9A84C;padding:24px 32px;text-align:center;"&gt;';
+    h += '&lt;h1 style="margin:0;font-size:28px;color:#1A1008;font-family:Georgia,serif;"&gt;Crvng Junction&lt;/h1&gt;';
+    h += '&lt;p style="margin:4px 0 0;color:#2D1F0A;font-size:12px;letter-spacing:2px;text-transform:uppercase;"&gt;Pre-Launch Exclusive&lt;/p&gt;';
+    h += '&lt;/div&gt;';
+
+    h += '&lt;div style="padding:32px;color:#F9F4EC;"&gt;';
+    h += '&lt;p style="font-size:16px;margin:0 0 8px;"&gt;Hey &lt;strong&gt;' + firstName + '&lt;/strong&gt; &#x1F44B;&lt;/p&gt;';
+    h += '&lt;p style="font-size:15px;line-height:1.6;color:rgba(249,244,236,0.8);margin:0 0 24px;"&gt;';
+    h += 'You are all set! Your free shawarma coupon is confirmed. ';
+    h += 'Please present this coupon code at the counter while ordering to redeem your free shawarma.';
+    h += '&lt;/p&gt;';
+
+    h += '&lt;div style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.35);border-radius:10px;padding:14px 18px;margin-bottom:16px;"&gt;';
+    h += '&lt;p style="margin:0 0 4px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(249,244,236,0.45);"&gt;Redemption Date&lt;/p&gt;';
+    h += '&lt;p style="margin:0;font-size:16px;font-weight:bold;color:#C9A84C;"&gt;' + dateLabel + '&lt;/p&gt;';
+    h += '&lt;/div&gt;';
+
+    h += '&lt;div style="background:#2D1F0A;border-radius:12px;padding:24px;text-align:center;margin-bottom:24px;"&gt;';
+    h += '&lt;p style="margin:0 0 8px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(249,244,236,0.45);"&gt;Your Coupon Code&lt;/p&gt;';
+    h += '&lt;p style="margin:0;font-size:36px;font-family:Georgia,serif;font-weight:bold;color:#C9A84C;letter-spacing:5px;"&gt;' + couponCode + '&lt;/p&gt;';
+    h += '&lt;p style="margin:8px 0 0;font-size:12px;color:rgba(249,244,236,0.35);"&gt;Valid on ' + dateLabel + ' only&lt;/p&gt;';
+    h += '&lt;/div&gt;';
+
+    h += '&lt;div style="background:rgba(255,255,255,0.04);border-left:3px solid #C9A84C;border-radius:0 8px 8px 0;padding:16px 18px;margin-bottom:8px;"&gt;';
+    h += '&lt;p style="margin:0 0 10px;font-size:13px;font-weight:bold;color:#C9A84C;"&gt;&#x26A0;&#xFE0F; Important Notes&lt;/p&gt;';
+    h += '&lt;ul style="margin:0;padding-left:18px;color:rgba(249,244,236,0.65);font-size:13px;line-height:2;"&gt;';
+    h += '&lt;li&gt;One coupon per person&lt;/li&gt;';
+    h += '&lt;li&gt;Coupon is non-transferable&lt;/li&gt;';
+    h += '&lt;li&gt;Valid only on the selected redemption date&lt;/li&gt;';
+    h += '&lt;li&gt;Limited-time promotional offer&lt;/li&gt;';
+    h += '&lt;/ul&gt;';
+    h += '&lt;/div&gt;';
+
+    h += '&lt;/div&gt;';
+
+    h += '&lt;div style="background:#0E0804;padding:16px 32px;text-align:center;"&gt;';
+    h += '&lt;p style="margin:0;font-size:12px;color:rgba(249,244,236,0.3);"&gt;&#169; 2025 Crvng Junction &amp;mdash; See you soon!&lt;/p&gt;';
+    h += '&lt;/div&gt;';
+
+    h += '&lt;/div&gt;';
+
+    var payload = {
+      sender: { name: BREVO_SENDER_NAME, email: BREVO_SENDER_EMAIL },
+      to: [{ email: toEmail, name: firstName }],
+      subject: 'Your Crvng Junction Free Shawarma Coupon!',
+      htmlContent: h
+    };
+
+    UrlFetchApp.fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'post',
+      contentType: 'application/json',
+      headers: { 'api-key': BREVO_API_KEY },
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+
+  } catch(e) { Logger.log('Email error: ' + e); }
+}
+
+function validateCoupon(code) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const rows = sheet.getDataRange().getValues();
+  const idx = rows.findIndex(r =&gt; r[8] === code);
+  if (idx &lt; 1) return jsonResponse({success:true, valid:false, reason:'Code not found'});
+  const row = rows[idx];
+  if (row[9] === 'true') return jsonResponse({success:true, valid:false, reason:'Already redeemed', name: row[1]+' '+row[2], date: row[7]});
+  sheet.getRange(idx+1, 10).setValue('true');
+  return jsonResponse({success:true, valid:true, name: row[1]+' '+row[2], date: row[7], email: row[5]});
+}
+
+function jsonResponse(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}</pre>
+  </details>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  CONFIG — Replace these values after setup
+// ═══════════════════════════════════════════════════════════
+const CONFIG = {
+  GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycby9dksxwnqNsGUGq_ClN1kAIaqL2Jhh-f31VPGKZFeNjQoKVzgGH9N13VhGUefpicU1/exec',
+  // Brevo API key is stored privately inside Google Apps Script — NOT here
+  ADMIN_PASSWORD: 'crvng2025',
+  DATES: [
+    { key: '2025-05-21', day: 'Wednesday', num: '21', month: 'May' },
+    { key: '2025-05-22', day: 'Thursday', num: '22', month: 'May' },
+    { key: '2025-05-23', day: 'Friday', num: '23', month: 'May' },
+    { key: '2025-05-24', day: 'Saturday', num: '24', month: 'May' },
+  ]
+};
+
+// ═══════════════════════════════════════════════════════════
+let selectedDate = null;
+let availability = {};
+let generatedCoupon = null;
+
+// Email is sent server-side by Google Apps Script — no email keys in this file
+
+// ── Fetch availability ──
+async function loadAvailability() {
+  const grid = document.getElementById('dates-grid');
+  try {
+    if (CONFIG.GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL') {
+      // Demo mode — show mock data
+      CONFIG.DATES.forEach(d => availability[d.key] = Math.floor(Math.random() * 60 + 20));
+    } else {
+      const res = await fetch(CONFIG.GOOGLE_SCRIPT_URL + '?action=getAvailability');
+      const data = await res.json();
+      if (data.success) availability = data.availability;
+    }
+  } catch (e) {
+    CONFIG.DATES.forEach(d => availability[d.key] = '?');
+  }
+  renderDateCards();
+}
+
+function renderDateCards() {
+  const grid = document.getElementById('dates-grid');
+  grid.innerHTML = '';
+  CONFIG.DATES.forEach(d => {
+    const count = availability[d.key] ?? 100;
+    const isFull = count === 0;
+    const isLow = count > 0 && count <= 20;
+    const pct = count === '?' ? 50 : Math.round((count / 100) * 100);
+    const card = document.createElement('div');
+    card.className = 'date-card' + (isFull ? ' full' : '');
+    card.dataset.key = d.key;
+    card.innerHTML = `
+      ${isFull ? '<div class="full-badge">FULL</div>' : ''}
+      <div class="day-name">${d.day}</div>
+      <div class="day-num">${d.num}</div>
+      <div class="month">${d.month} 2025</div>
+      <div class="avail-bar-wrap"><div class="avail-bar${isLow?' low':''}" style="width:${pct}%"></div></div>
+      <div class="avail-count${isLow?' low-text':''}${isFull?' full-text':''}">
+        ${isFull ? 'Fully booked' : count === '?' ? 'Loading...' : `${count} of 100 left`}
+      </div>`;
+    if (!isFull) card.addEventListener('click', () => selectDate(d));
+    grid.appendChild(card);
+  });
+}
+
+function selectDate(d) {
+  selectedDate = d.key;
+  document.querySelectorAll('.date-card').forEach(c => c.classList.remove('selected'));
+  const card = document.querySelector(`.date-card[data-key="${d.key}"]`);
+  if (card) card.classList.add('selected');
+  document.getElementById('selected-date-display').textContent = `${d.day}, ${d.num} ${d.month} 2025`;
+  document.getElementById('selected-date-display').style.color = '';
+  document.getElementById('no-date-err').style.display = 'none';
+}
+
+// ── Validation ──
+function setError(fieldId, show) {
+  const f = document.getElementById('field-' + fieldId);
+  if (!f) return;
+  f.classList.toggle('has-error', show);
+  const inp = document.getElementById(fieldId);
+  if (inp) inp.classList.toggle('error', show);
+}
+
+function validate() {
+  let ok = true;
+  const fname = document.getElementById('fname').value.trim();
+  const lname = document.getElementById('lname').value.trim();
+  const age = document.getElementById('age').value.trim();
+  const gender = document.getElementById('gender').value;
+  const email = document.getElementById('email').value.trim();
+  const contact = document.getElementById('contact').value.trim();
+
+  setError('fname', !fname); if (!fname) ok = false;
+  setError('lname', !lname); if (!lname) ok = false;
+  setError('age', !age || isNaN(age) || age < 1 || age > 120); if (!age || isNaN(age)) ok = false;
+  setError('gender', !gender); if (!gender) ok = false;
+  setError('email', !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)); if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) ok = false;
+  setError('contact', !contact || contact.replace(/\D/g,'').length < 7); if (!contact || contact.replace(/\D/g,'').length < 7) ok = false;
+
+  if (!selectedDate) {
+    document.getElementById('no-date-err').style.display = 'block';
+    ok = false;
+  }
+  return ok;
+}
+
+// ── Submit ──
+async function handleSubmit() {
+  if (!validate()) return;
+
+  const btn = document.getElementById('submit-btn');
+  const loading = document.getElementById('submit-loading');
+  btn.disabled = true;
+  loading.style.display = 'block';
+
+  const payload = {
+    action: 'register',
+    firstName: document.getElementById('fname').value.trim(),
+    lastName: document.getElementById('lname').value.trim(),
+    age: document.getElementById('age').value.trim(),
+    gender: document.getElementById('gender').value,
+    email: document.getElementById('email').value.trim(),
+    contact: document.getElementById('contact').value.trim(),
+    date: selectedDate,
+  };
+
+  let couponCode = null;
+
+  try {
+    if (CONFIG.GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL') {
+      // Demo mode — simulate
+      await new Promise(r => setTimeout(r, 1200));
+      couponCode = 'CRVNG-' + Math.random().toString(36).substring(2,8).toUpperCase();
+    } else {
+      const res = await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.error === 'FULL') {
+        alert('Sorry, this date is now fully booked! Please choose another date.');
+        btn.disabled = false; loading.style.display = 'none';
+        await loadAvailability();
+        return;
+      }
+      if (data.error === 'DUPLICATE') {
+        alert('It looks like you\'ve already registered with this email for this date!');
+        btn.disabled = false; loading.style.display = 'none';
+        return;
+      }
+      if (!data.success) throw new Error('Registration failed');
+      couponCode = data.couponCode;
+    }
+  } catch (e) {
+    alert('Something went wrong. Please try again.');
+    btn.disabled = false; loading.style.display = 'none';
+    return;
+  }
+
+  generatedCoupon = couponCode;
+
+  // Email is sent by Google Apps Script after registration — nothing needed here
+
+  // Update UI
+  loading.style.display = 'none';
+  document.getElementById('reg-form-wrap').style.display = 'none';
+  document.getElementById('coupon-display').textContent = couponCode;
+  document.getElementById('email-confirm').textContent = payload.email;
+  document.getElementById('success-screen').style.display = 'block';
+
+  // Decrease local count
+  if (availability[selectedDate] && typeof availability[selectedDate] === 'number') {
+    availability[selectedDate] = Math.max(0, availability[selectedDate] - 1);
+    renderDateCards();
+  }
+}
+
+function copyCoupon() {
+  if (generatedCoupon) {
+    navigator.clipboard.writeText(generatedCoupon).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy Code', 2000);
+    });
+  }
+}
+
+// ── Admin ──
+let adminLoggedIn = false;
+
+function toggleAdmin() {
+  const panel = document.getElementById('admin-panel');
+  panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+}
+
+function adminLogin() {
+  const pass = document.getElementById('admin-pass').value;
+  if (pass === CONFIG.ADMIN_PASSWORD) {
+    document.getElementById('admin-login-section').style.display = 'none';
+    document.getElementById('admin-validator-section').style.display = 'block';
+    adminLoggedIn = true;
+  } else {
+    document.getElementById('admin-login-err').style.display = 'block';
+  }
+}
+
+async function validateCoupon() {
+  if (!adminLoggedIn) return;
+  const code = document.getElementById('coupon-input').value.trim().toUpperCase();
+  if (!code) return;
+  const result = document.getElementById('admin-result');
+  const loading = document.getElementById('validate-loading');
+  result.style.display = 'none';
+  loading.style.display = 'block';
+
+  try {
+    if (CONFIG.GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL') {
+      await new Promise(r => setTimeout(r, 800));
+      result.className = 'admin-result invalid';
+      result.textContent = '⚠ Demo mode — connect your Google Sheet to validate real coupons.';
+      result.style.display = 'block';
+    } else {
+      const res = await fetch(`${CONFIG.GOOGLE_SCRIPT_URL}?action=validate&code=${encodeURIComponent(code)}`);
+      const data = await res.json();
+      if (data.valid) {
+        result.className = 'admin-result valid';
+        result.innerHTML = `✅ Valid coupon!<br><strong>${data.name}</strong> — registered for ${data.date}<br>Marked as redeemed.`;
+      } else {
+        result.className = 'admin-result invalid';
+        result.innerHTML = `❌ Invalid or already used<br>${data.reason || ''}${data.name ? `<br>Name: ${data.name}` : ''}`;
+      }
+      result.style.display = 'block';
+    }
+  } catch (e) {
+    result.className = 'admin-result invalid';
+    result.textContent = 'Error checking coupon. Try again.';
+    result.style.display = 'block';
+  }
+  loading.style.display = 'none';
+}
+
+// Start
+loadAvailability();
+</script>
+</body>
+</html>
