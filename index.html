@@ -720,7 +720,7 @@ let generatedCoupon = null;
 async function loadAvailability() {
   const grid = document.getElementById('dates-grid');
   try {
-    if (CONFIG.GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycby9dksxwnqNsGUGq_ClN1kAIaqL2Jhh-f31VPGKZFeNjQoKVzgGH9N13VhGUefpicU1/exec') {
+    if (CONFIG.GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL') {
       // Demo mode — show mock data
       CONFIG.DATES.forEach(d => availability[d.key] = Math.floor(Math.random() * 60 + 20));
     } else {
@@ -824,7 +824,7 @@ async function handleSubmit() {
   let couponCode = null;
 
   try {
-    if (CONFIG.GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycby9dksxwnqNsGUGq_ClN1kAIaqL2Jhh-f31VPGKZFeNjQoKVzgGH9N13VhGUefpicU1/exec') {
+    if (CONFIG.GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL') {
       // Demo mode — simulate
       await new Promise(r => setTimeout(r, 1200));
       couponCode = 'CRVNG-' + Math.random().toString(36).substring(2,8).toUpperCase();
@@ -911,7 +911,7 @@ async function validateCoupon() {
   loading.style.display = 'block';
 
   try {
-    if (CONFIG.GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycby9dksxwnqNsGUGq_ClN1kAIaqL2Jhh-f31VPGKZFeNjQoKVzgGH9N13VhGUefpicU1/exec') {
+    if (CONFIG.GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL') {
       await new Promise(r => setTimeout(r, 800));
       result.className = 'admin-result invalid';
       result.textContent = '⚠ Demo mode — connect your Google Sheet to validate real coupons.';
